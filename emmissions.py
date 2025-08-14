@@ -2,11 +2,10 @@ import numpy as np
 import pandas as pd
 import plotly.express as px
 import matplotlib.pyplot as plt
-# import streamlit as st
-# import joblib
+import streamlit as st
+import joblib
 
 from sklearn.preprocessing import StandardScaler
-from sklearn.preprocessing import RobustScaler
 from sklearn.preprocessing import OneHotEncoder
 from sklearn.compose import ColumnTransformer
 from sklearn.model_selection import train_test_split
@@ -40,7 +39,7 @@ model = Pipeline(
 )
 
 
-# print('Read dataset completed successfully.')
+
 # print('Total number of rows: {0}\n\n'.format(len(data_frame.index)))
 # # print(data_frame.head(10))
 # # print(data_frame.corr(numeric_only = True))
@@ -58,18 +57,7 @@ model = Pipeline(
 
 features_train, features_val, labels_train, labels_val = train_test_split(features, labels, test_size=0.2, random_state = 42)
 
-# scaler_labels = StandardScaler()
-# scaler_features = StandardScaler()
-
-# features_train= scaler_features.fit_transform(features_train)
-# features_val = scaler_features.transform(features_val)
-
-# labels_train_scaled = scaler_labels.fit_transform(labels_train.values.reshape(-1, 1)).ravel()
-# labels_val_scaled = scaler_labels.transform(labels_val.values.reshape(-1, 1)).ravel()
-
-
-
-#use and train multiple models choose the best
+# use and train multiple models choose the best
 # models = [RandomForestRegressor(random_state=42), SVR()]
 
 
@@ -77,26 +65,30 @@ model.fit(features_train, labels_train)
 print(f'${model}: ')
 
 training_predictions = model.predict(features_train)
-
-# train_pred = scaler_labels.inverse_transform(training_predictions.reshape(-1, 1)).ravel()
 val_predictions = model.predict(features_val)
+joblib.dump('model.pkl')
+model = joblib.load('model.pkl')
+st.title('Car Carbon Emissions Predictor')
 
-# val_predictions = scaler_labels.inverse_transform(val_predictions.reshape(-1, 1)).ravel()
-# joblib.dump(model, "model.pkl")
-# joblib.dump(scaler_features, "scaler_features.pkl")
-# joblib.dump(scaler_labels, "scaler_labels.pkl")
+engine_size = st.number_input('Engine Size (L)', min_value=0.0, max_value=10.0, value=2.0)
+cylinders = st.number_input('Cylinders', min_value=2, max_value=16, value=4)
+make = st.text_input('Make')
 
-# st.title("CO2 Emissions Predictor")
-# engine_size = st.number_input('Engine Size (L)', min_value=0.0, max_value=10.0, value=2.0)
-# cylinders = st.number_input('Cylinders', min_value=2, max_value=16, value=4)
-# fuel_consumption = st.number_input('Fuel Consumption (L/100 km)', min_value=1.0, max_value=30.0, value=8.0)
+if st.button('Predict'):
+    input_df = pd.DataFrame({
+        'Engine Size L': [engine_size],
+        'Cylinder': [cylinders],
+        'Make': [make]
+    })
+    prediction= model.predict(input_df)[0]
+    st.success(f"Estimated CO₂ Emissions: **{prediction:.2f} g/km**")
 
-# user_input = np.array([[engine_size, cylinders, fuel_consumption]])
+
 # user_input_scaled = scaler_features.transform(user_input)
 # pred_scaled = rf_model.predict(user_input_scaled)
 # pred_original = scaler_labels.inverse_transform(pred_scaled.reshape(-1,1))[0][0]
 
-# st.success(f"Predicted CO2 Emissions: {pred_original:.2f} g/km")
+
 
 
 # plt.scatter(labels_train, train_pred, color='blue', alpha=0.5, label='Training Predicted emmissions vs Actual emmissions')
@@ -132,6 +124,7 @@ plt.show()
 # print('Validation Error : ', mae(labels_val, val_predictions))
 # print('mse error: ', mse(labels_val, val_predictions))
 # print('DONE \n')
+
 
 
 
