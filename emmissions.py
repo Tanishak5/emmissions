@@ -68,17 +68,12 @@ print(f'${model}: ')
 
 training_predictions = model.predict(features_train)
 val_predictions = model.predict(features_val)
-<<<<<<< HEAD
 joblib.dump(model, 'model.pkl')
-=======
-joblib.dump('model.pkl')
->>>>>>> 73ced223c78a4c2f7e7a433bbf9b1bb2d1593ea9
 model = joblib.load('model.pkl')
 st.title('Car Carbon Emissions Predictor')
 
 engine_size = st.number_input('Engine Size (L)', min_value=0.0, max_value=10.0, value=2.0)
 cylinders = st.number_input('Cylinders', min_value=2, max_value=16, value=4)
-<<<<<<< HEAD
 fuel_consumption = st.number_input('Fuel Consumption MPG', min_value=2, max_value=50, value=4)
 fuel_consumption = 235.215 / fuel_consumption 
 make_options = ['ACURA', 'ALFA ROMEO', 'ASTON MARTIN', 'AUDI', 'BENTLEY', 'BMW', 'BUICK',
@@ -110,25 +105,6 @@ if st.button('Predict'):
         )
     )
     st.plotly_chart(fig)
-=======
-make = st.text_input('Make')
-
-if st.button('Predict'):
-    input_df = pd.DataFrame({
-        'Engine Size L': [engine_size],
-        'Cylinder': [cylinders],
-        'Make': [make]
-    })
-    prediction= model.predict(input_df)[0]
-    st.success(f"Estimated CO₂ Emissions: **{prediction:.2f} g/km**")
-
-
-# user_input_scaled = scaler_features.transform(user_input)
-# pred_scaled = rf_model.predict(user_input_scaled)
-# pred_original = scaler_labels.inverse_transform(pred_scaled.reshape(-1,1))[0][0]
-
-
->>>>>>> 73ced223c78a4c2f7e7a433bbf9b1bb2d1593ea9
 
 
 # Test data
@@ -163,9 +139,3 @@ if st.button('Predict'):
 # print('Validation Error : ', mae(labels_val, val_predictions))
 # print('mse error: ', mse(labels_val, val_predictions))
 # print('DONE \n')
-
-
-
-
-
-
