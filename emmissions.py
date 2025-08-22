@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 import plotly.express as px
+import plotly.graph_objects as go
 import matplotlib.pyplot as plt
 import streamlit as st
 import joblib
@@ -23,6 +24,7 @@ features = data_frame[['Make', 'Engine Size(L)', 'Cylinders', 'Fuel Consumption 
 labels = data_frame['CO2 Emissions(g/km)']
 numerical = ['Engine Size(L)', 'Cylinders', 'Fuel Consumption Comb (L/100 km)']
 categories=['Make']
+# print(data_frame['Make'].unique())
 
 preprocessor = ColumnTransformer(
     transformers = [
@@ -66,12 +68,49 @@ print(f'${model}: ')
 
 training_predictions = model.predict(features_train)
 val_predictions = model.predict(features_val)
+<<<<<<< HEAD
+joblib.dump(model, 'model.pkl')
+=======
 joblib.dump('model.pkl')
+>>>>>>> 73ced223c78a4c2f7e7a433bbf9b1bb2d1593ea9
 model = joblib.load('model.pkl')
 st.title('Car Carbon Emissions Predictor')
 
 engine_size = st.number_input('Engine Size (L)', min_value=0.0, max_value=10.0, value=2.0)
 cylinders = st.number_input('Cylinders', min_value=2, max_value=16, value=4)
+<<<<<<< HEAD
+fuel_consumption = st.number_input('Fuel Consumption MPG', min_value=2, max_value=50, value=4)
+fuel_consumption = 235.215 / fuel_consumption 
+make_options = ['ACURA', 'ALFA ROMEO', 'ASTON MARTIN', 'AUDI', 'BENTLEY', 'BMW', 'BUICK',
+ 'CADILLAC', 'CHEVROLET', 'CHRYSLER', 'DODGE', 'FIAT', 'FORD', 'GMC', 'HONDA',
+ 'HYUNDAI', 'INFINITI', 'JAGUAR', 'JEEP', 'KIA', 'LAMBORGHINI', 'LAND ROVER',
+ 'LEXUS', 'LINCOLN', 'MASERATI', 'MAZDA', 'MERCEDES-BENZ', 'MINI', 'MITSUBISHI',
+ 'NISSAN', 'PORSCHE', 'RAM', 'ROLLS-ROYCE', 'SCION', 'SMART', 'SRT', 'SUBARU',
+ 'TOYOTA', 'VOLKSWAGEN', 'VOLVO', 'GENESIS', 'BUGATTI']
+make = st.selectbox("Select Your Car Make: ", make_options)
+
+if st.button('Predict'):
+    input_df = pd.DataFrame({
+        'Make': [make],
+        'Engine Size(L)': [engine_size],
+        'Cylinders': [cylinders],
+        'Fuel Consumption Comb (L/100 km)': [fuel_consumption],
+
+    })
+    prediction= model.predict(input_df)[0]
+    st.success(f"Estimated CO₂ Emissions: **{prediction:.2f} g/km**")
+
+    fig = px.scatter(data_frame, x= "Make", y = "CO2 Emissions(g/km)")
+    fig.add_trace(go.Scatter(x=[make], y=[prediction], mode='markers',  marker=dict(
+                color='red',  # Set the color of the specific point
+                size=12,      # Adjust the size
+                symbol='star' # Change the marker symbol if desired
+            ),
+            name='Your Car' # Add a name for the legend
+        )
+    )
+    st.plotly_chart(fig)
+=======
 make = st.text_input('Make')
 
 if st.button('Predict'):
@@ -89,30 +128,30 @@ if st.button('Predict'):
 # pred_original = scaler_labels.inverse_transform(pred_scaled.reshape(-1,1))[0][0]
 
 
+>>>>>>> 73ced223c78a4c2f7e7a433bbf9b1bb2d1593ea9
 
-
-# plt.scatter(labels_train, train_pred, color='blue', alpha=0.5, label='Training Predicted emmissions vs Actual emmissions')
 
 # Test data
-fig, axs = plt.subplots(1, 2, figsize = (10,4))
-axs[0].scatter(labels_train, training_predictions, color='green')
-axs[0].set_xlabel('Actual Training Emmissions')
-axs[0].set_ylabel('Predicted TrainingEmmissions')
-min_val = min(labels.min(), training_predictions.min(), val_predictions.min())
-max_val = max(labels.max(), training_predictions.max(), val_predictions.max())
-axs[0].plot([min_val, max_val], [min_val, max_val], color='red', linestyle='--', label='Perfect Prediction')
-axs[0].grid(True)
+# fig, axs = plt.subplots(1, 2, figsize = (10,4))
+# axs[0].scatter(labels_train, training_predictions, color='green')
+# axs[0].set_xlabel('Actual Training Emmissions')
+# axs[0].set_ylabel('Predicted TrainingEmmissions')
+# min_val = min(labels.min(), training_predictions.min(), val_predictions.min())
+# max_val = max(labels.max(), training_predictions.max(), val_predictions.max())
+# axs[0].plot([min_val, max_val], [min_val, max_val], color='red', linestyle='--', label='Perfect Prediction')
+# axs[0].grid(True)
 
-axs[1].scatter(labels_val, val_predictions, color='blue')
-axs[1].set_xlabel('Actual Test Emmissions')
-axs[1].set_ylabel('Predicted Test Emmissions')
-min_val = min(labels.min(), training_predictions.min(), val_predictions.min())
-max_val = max(labels.max(), training_predictions.max(), val_predictions.max())
-axs[1].plot([min_val, max_val], [min_val, max_val], color='red', linestyle='--', label='Perfect Prediction')
-axs[1].grid(True)
+# axs[1].scatter(labels_val, val_predictions, color='blue')
+# axs[1].set_xlabel('Actual Test Emmissions')
+# axs[1].set_ylabel('Predicted Test Emmissions')
+# min_val = min(labels.min(), training_predictions.min(), val_predictions.min())
+# max_val = max(labels.max(), training_predictions.max(), val_predictions.max())
+# axs[1].plot([min_val, max_val], [min_val, max_val], color='red', linestyle='--', label='Perfect Prediction')
+# axs[1].grid(True)
 
-plt.tight_layout()
-plt.show()
+# # plt.tight_layout()
+
+# plt.show()
 
 
 
@@ -124,6 +163,8 @@ plt.show()
 # print('Validation Error : ', mae(labels_val, val_predictions))
 # print('mse error: ', mse(labels_val, val_predictions))
 # print('DONE \n')
+
+
 
 
 
